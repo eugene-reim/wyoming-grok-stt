@@ -23,7 +23,7 @@ _LOGGER = logging.getLogger("wyoming-grok-stt")
 XAI_API_KEY = os.getenv("XAI_API_KEY", "")
 XAI_STT_URL = os.getenv("XAI_STT_URL", "https://api.x.ai/v1/stt")
 DEFAULT_LANGUAGE = os.getenv("LANGUAGE", "en")
-URI = os.getenv("WYOMING_URI", "tcp://0.0.0.0:10300")
+URI = os.getenv("WYOMING_URI", "tcp://0.0.0.0:10500")
 DEBUG = os.getenv("DEBUG", "false").lower() in ("1", "true", "yes")
 
 

@@ -1,10 +1,15 @@
-FROM python:3.12-slim AS builder
+FROM python:3.12-slim-bookworm AS builder
 
 RUN pip install --no-cache-dir \
     wyoming==1.5.4 \
     httpx
 
-FROM python:3.12-slim
+FROM python:3.12-slim-bookworm
+
+# Ensure OS packages are up-to-date to address known vulnerabilities
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
@@ -22,10 +27,10 @@ RUN useradd -l --create-home wyoming-grok-stt && \
 
 USER wyoming-grok-stt
 
-EXPOSE 10300
+EXPOSE 10500
 
 # Real healthcheck – checks that the TCP server is listening
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD python -c "import socket; socket.create_connection(('127.0.0.1', 10300), timeout=2)" || exit 1
+  CMD python -c "import socket; socket.create_connection(('127.0.0.1', 10500), timeout=2)" || exit 1
 
 CMD ["python", "main.py"]
