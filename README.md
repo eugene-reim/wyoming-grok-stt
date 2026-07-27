@@ -16,7 +16,7 @@ List of supported docker environment variables
 |------------------|------------------------------|----------|---------------------------------------|
 | `XAI_API_KEY`    | —                            | Yes      | xAI API key                           |
 | `LANGUAGE`       | `en`                         | No       | Default language code                 |
-| `WYOMING_URI`    | `tcp://0.0.0.0:10300`        | No       | Address the Wyoming server listens on |
+| `WYOMING_URI`    | `tcp://0.0.0.0:10500`        | No       | Address the Wyoming server listens on |
 | `DEBUG`          | `false`                      | No       | Enable debug logging                  |
 | `XAI_STT_URL`    | `https://api.x.ai/v1/stt`    | No       | xAI STT endpoint                      |
 
