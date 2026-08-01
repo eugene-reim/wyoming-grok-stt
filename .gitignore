@@ -1,2 +1,19 @@
+# Local overrides
 docker-compose.yml
 .env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*~

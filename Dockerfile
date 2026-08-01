@@ -2,11 +2,10 @@ FROM python:3.12-slim-bookworm AS builder
 
 RUN pip install --no-cache-dir \
     wyoming==1.5.4 \
-    httpx
+    httpx==0.28.1
 
 FROM python:3.12-slim-bookworm
 
-# Ensure OS packages are up-to-date to address known vulnerabilities
 RUN apt-get update \
     && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/*
@@ -16,7 +15,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Only copy what we need
 COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
@@ -29,7 +27,6 @@ USER wyoming-grok-stt
 
 EXPOSE 10500
 
-# Real healthcheck – checks that the TCP server is listening
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD python -c "import socket; socket.create_connection(('127.0.0.1', 10500), timeout=2)" || exit 1
 
