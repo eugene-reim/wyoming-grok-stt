@@ -34,8 +34,16 @@ class GrokSttHandler(AsyncEventHandler):
         self._sample_width = 2
         self._channels = 1
         self._client = httpx.AsyncClient(timeout=60.0)
+        _LOGGER.debug("Client connected")
 
     async def handle_event(self, event: Event) -> bool:
+        try:
+            return await self._handle_event(event)
+        except Exception:
+            _LOGGER.exception("Error while handling event type=%s", event.type)
+            return False
+
+    async def _handle_event(self, event: Event) -> bool:
         if Describe.is_type(event.type):
             await self.write_event(
                 Info(
@@ -88,12 +96,14 @@ class GrokSttHandler(AsyncEventHandler):
                     ]
                 ).event()
             )
+            _LOGGER.debug("Sent info")
             return True
 
         if Transcribe.is_type(event.type):
             data = Transcribe.from_event(event)
             if data.language:
                 self.language = data.language
+            _LOGGER.debug("Transcribe language=%s", self.language)
             return True
 
         if AudioStart.is_type(event.type):
@@ -103,7 +113,12 @@ class GrokSttHandler(AsyncEventHandler):
             self._channels = start.channels
             self._audio.clear()
             self._is_recording = True
-            _LOGGER.debug("AudioStart: %s Hz, %s ch", self._sample_rate, self._channels)
+            _LOGGER.debug(
+                "AudioStart: %s Hz, %s ch, width=%s",
+                self._sample_rate,
+                self._channels,
+                self._sample_width,
+            )
             return True
 
         if AudioChunk.is_type(event.type) and self._is_recording:
@@ -143,7 +158,6 @@ class GrokSttHandler(AsyncEventHandler):
             wav_data = wav_buffer.getvalue()
 
             files = {"file": ("audio.wav", wav_data, "audio/wav")}
-            # Prefer language from Wyoming Transcribe event; fall back to auto-detect
             lang = self.language or "auto"
             data = {"language": lang}
             if self.language:
@@ -174,6 +188,10 @@ class GrokSttHandler(AsyncEventHandler):
             _LOGGER.exception("Failed to call xAI STT")
             return ""
 
+    async def disconnect(self) -> None:
+        _LOGGER.debug("Client disconnected")
+        await self._client.aclose()
+
 
 async def main() -> None:
     logging.basicConfig(
@@ -183,6 +201,8 @@ async def main() -> None:
 
     _LOGGER.info("Starting wyoming-grok-stt")
     _LOGGER.info("URI: %s", URI)
+    if not XAI_API_KEY:
+        _LOGGER.warning("XAI_API_KEY is not set — transcriptions will fail")
 
     server = AsyncServer.from_uri(URI)
     await server.run(GrokSttHandler)
