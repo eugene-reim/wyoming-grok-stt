@@ -8,7 +8,6 @@ import logging
 import os
 import io
 import wave
-from functools import partial
 
 import httpx
 from wyoming.audio import AudioChunk, AudioStart, AudioStop
@@ -144,9 +143,10 @@ class GrokSttHandler(AsyncEventHandler):
             wav_data = wav_buffer.getvalue()
 
             files = {"file": ("audio.wav", wav_data, "audio/wav")}
-            data = {}
+            # Prefer language from Wyoming Transcribe event; fall back to auto-detect
+            lang = self.language or "auto"
+            data = {"language": lang}
             if self.language:
-                data["language"] = self.language
                 data["format"] = "true"
 
             headers = {"Authorization": f"Bearer {XAI_API_KEY}"}

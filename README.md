@@ -3,7 +3,8 @@
 ### Wyoming protocol Speech-to-Text server that uses the xAI Grok STT API.
 The service receives audio via the Wyoming protocol, converts it to WAV, and sends it to the xAI Speech-to-Text endpoint. The resulting transcript is returned to the client.
 
-Language is taken from the Wyoming `Transcribe` event sent by the client (e.g. Home Assistant).
+Language is taken from the Wyoming `Transcribe` event sent by the client (e.g. Home Assistant).  
+If the client does not provide a language, the server falls back to `auto` (automatic language detection by xAI).
 
 ## Requirements
 
