@@ -3,6 +3,9 @@
 ### Wyoming protocol Speech-to-Text server that uses the xAI Grok STT API.
 The service receives audio via the Wyoming protocol, converts it to WAV, and sends it to the xAI Speech-to-Text endpoint. The resulting transcript is returned to the client.
 
+Language is taken from the Wyoming `Transcribe` event sent by the client (e.g. Home Assistant).  
+If the client does not provide a language, the server falls back to `auto` (automatic language detection by xAI).
+
 ## Requirements
 
 - Docker
@@ -15,7 +18,6 @@ List of supported docker environment variables
 | Variable         | Default                      | Required | Description                           |
 |------------------|------------------------------|----------|---------------------------------------|
 | `XAI_API_KEY`    | —                            | Yes      | xAI API key                           |
-| `LANGUAGE`       | `en`                         | No       | Default language code                 |
 | `WYOMING_URI`    | `tcp://0.0.0.0:10500`        | No       | Address the Wyoming server listens on |
 | `DEBUG`          | `false`                      | No       | Enable debug logging                  |
 | `XAI_STT_URL`    | `https://api.x.ai/v1/stt`    | No       | xAI STT endpoint                      |
@@ -30,7 +32,6 @@ docker run -d \
   --name wyoming-grok-stt \
   -p 10500:10500 \
   -e XAI_API_KEY=your_api_key_here \
-  -e LANGUAGE=en \
   ghcr.io/eugene-reim/wyoming-grok-stt:latest
 ```
 
@@ -58,7 +59,6 @@ services:
       - "10500:10500"
     environment:
       - XAI_API_KEY=${XAI_API_KEY}
-      - LANGUAGE=en
     restart: unless-stopped
 ```
 

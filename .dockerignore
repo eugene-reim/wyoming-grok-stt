@@ -1,3 +1,11 @@
 .env
 docker-compose.yml
 README.md
+.git
+.gitignore
+.github
+*.md
+__pycache__
+*.pyc
+.venv
+venv
