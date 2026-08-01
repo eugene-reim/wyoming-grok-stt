@@ -22,9 +22,6 @@ List of supported docker environment variables
 | `DEBUG`          | `false`                      | No       | Enable debug logging                  |
 | `XAI_STT_URL`    | `https://api.x.ai/v1/stt`    | No       | xAI STT endpoint                      |
 
-See all supported languages in [xAI documentation](https://docs.x.ai/developers/model-capabilities/audio/speech-to-text#supported-languages).
-
-
 ## Run with Docker
 
 ```bash
