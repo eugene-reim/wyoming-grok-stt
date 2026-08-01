@@ -53,7 +53,7 @@ class GrokSttHandler(AsyncEventHandler):
                             description="Grok Speech-to-Text (xAI)",
                             attribution=Attribution(name="xAI", url="https://x.ai"),
                             installed=True,
-                            version="1.0.0",
+                            version="1.5.0",
                             models=[
                                 AsrModel(
                                     name="grok-stt",
@@ -62,7 +62,7 @@ class GrokSttHandler(AsyncEventHandler):
                                         name="xAI", url="https://x.ai"
                                     ),
                                     installed=True,
-                                    version="1.0.0",
+                                    version="1.5.0",
                                     languages=[
                                         "ar",
                                         "cs",
